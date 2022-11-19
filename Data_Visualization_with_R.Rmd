@@ -350,21 +350,40 @@ If you are looking for datasets, these are some good resources:
 - [Reddit **r/datasets**](https://www.reddit.com/r/datasets/)
 - [Kaggle datasets](https://www.kaggle.com/datasets)
 
-You can practice your visualization skills too by reproducing other plots. You can find some beautiful ones on 
+You can practice your visualization skills too by reproducing other plots. You can find some beautiful ones on:
 
 - [Reddit **r/dataisbeautiful**](https://www.reddit.com/r/dataisbeautiful/)
 - [the R Graph Gallery](https://r-graph-gallery.com)
 
 ## How to download your project
 
-You can download your project and run this tutorial on your own computer.
+You can download your project and run this tutorial on your own computer. First you need to go to your workspace.
 
+```{r fig-workspace, echo = FALSE, out.width = "90%", fig.align = "center"}
+knitr::include_graphics("images/workspace.png")
+```
 
+Once in your workspace, click on the export button.
 
+```{r fig-export1, echo = FALSE, out.width = "90%", fig.align = "center"}
+knitr::include_graphics("images/export_project.png")
+```
 
+This will create a zip file with all the files inside your project. It may take a while.
 
+```{r fig-export2, echo = FALSE, out.width = "80%", fig.align = "center"}
+knitr::include_graphics("images/exporting.png")
+```
 
+```{r fig-export3, echo = FALSE, out.width = "80%", fig.align = "center"}
+knitr::include_graphics("images/export_complete.png")
+```
 
+When the export is complete you will be able to download the zip file to your computer.
+
+```{r fig-dest, echo = FALSE, out.width = "90%", fig.align = "center"}
+knitr::include_graphics("images/choose_destination.png")
+```
 
 
 
