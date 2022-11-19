@@ -305,16 +305,14 @@ Now we will explore some of the most popular `geom_*` functions.
 
 #### **Bar plots**
 
-To make a histogram you can use the `geom_col()` function. Let's make a bar plot of the totals of every genre; there will be some data wrangling involved.
+To make a histogram you can use the `geom_col()` function. Let's make a bar plot of the totals of every genre. There is some data wrangling involved, so I went ahead and did that for you. The dataset we need is in the **counts\_by\_genre.csv** file inside the **data/** folder
 
 ```{r col, exercise = TRUE, exercise.eval = FALSE}
+# Read the new file
+cbg <- 
+
 # Bar plot by totals of genres
-str_serv %>%
-  pivot_longer(cols = Action:Thriller,
-               names_to = "genre",
-               values_to = "value") %>%
-  group_by(genre) %>%
-  summarise(total = sum(value)) %>%
+cbg %>%
   ggplot(aes(genre, total)) +
   geom_col()
 ```

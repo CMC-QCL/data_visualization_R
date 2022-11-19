@@ -9,6 +9,9 @@ library(missForest)
 # Define NOT IN
 '%ni%' <- Negate('%in%')
 
+#------------------------------------------------------------------------------
+## First dataset
+
 # Read all files (add platform column)
 netflix <- read_csv('data/netflix_titles.csv') %>%
   mutate(platform = 'netflix')
@@ -164,3 +167,20 @@ final_dataset$country <- final_dataset$country %>%
 
 # Save the dataset
 write_csv(final_dataset, "data/streaming_services.csv")
+
+#------------------------------------------------------------------------------
+## Second dataset
+
+# Make a pivot table with the genres' columns
+pivot_table <- final_dataset %>%
+  pivot_longer(cols = Action:Thriller,
+               names_to = "genre",
+               values_to = "value")
+
+# Group by and summarise the total by genre
+counts_by_genre <- pivot_table %>%
+  group_by(genre) %>%
+  summarise(total = sum(value))
+
+# Save the dataset
+write_csv(counts_by_genre, "data/counts_by_genre.csv")
