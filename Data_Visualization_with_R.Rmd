@@ -3,18 +3,11 @@ title: "Data Visualization with R"
 author: Jorge Peña (QCL Graduate Fellow)
 date: "Monday, November 21, 2022"
 output:
-  learnr::tutorial:
-    progressive: true
-    allow_skip: true
-runtime: shiny_prerendered
-description: >
-  Tutorial for the Data Visualization with R Workshop
-  at the QCL.
+  rmdformats::readthedown:
+  highlight: tango
 ---
 
 ```{r setup, include=FALSE}
-library(learnr)
-
 knitr::opts_chunk$set(error = TRUE)
 ```
 
@@ -100,23 +93,23 @@ The data we will work with today comes from 4 [Kaggle](https://www.kaggle.com/) 
 
 Let's import our data. Use the `read_csv()` function to read the file **streaming\_services.csv** inside the **data/** folder and assign it to the `str_serv` variable.
 
-```{r hands-on1, exercise = TRUE, exercise.eval = FALSE}
+```{r hands-on1}
 library(tidyverse)
 
 # Load the file with today's data
-str_serv <- 
+str_serv <- read_csv('data/streaming_services.csv')
 ```
 
 Take a look at some of the variables in our data
 
-```{r data-head, exercise = TRUE, exercise.eval = FALSE}
+```{r data-head, include = TRUE, echo = TRUE}
 # Use the head() function
-
+head(str_serv)
 ```
 
 Now explore the structure of the data
 
-```{r data-str, exercise = TRUE, exercise.eval = FALSE}
+```{r data-str}
 # Use the str() function
 
 ```
@@ -168,7 +161,7 @@ knitr::kable(essential, "simple")
 
 All plots start by adding our data using the `ggplot()` function.
 
-```{r data-component, exercise = TRUE, exercise.eval = FALSE}
+```{r data-component}
 # Data component
 ggplot(str_serv)
 ```
@@ -179,14 +172,14 @@ Notice that this is just a blank space where our plot should be. This is because
 
 This component maps the variables in our data onto the visual properties of our graph, such as the x and y coordinates. In order to use this component, call the `aes()` function inside `ggplot()`. For example, to plot the average IMDB rating against the release year of the title
 
-```{r aes-component, exercise = TRUE, exercise.eval = FALSE}
+```{r aes-component}
 # Aesthetic component
 ggplot(str_serv, aes(x = startYear, y = averageRating))
 ```
 
 The `aes()` function has `x` and `y` as positional arguments, so you can write the same thing as above without naming them
 
-```{r aes-component2, exercise = TRUE, exercise.eval = FALSE}
+```{r aes-component2}
 # Aesthetic component
 ggplot(str_serv, aes(startYear, averageRating))
 ```
@@ -197,7 +190,7 @@ Still you won't be able to see your data, but we now have our x-axis and y-axis.
 
 There are multiple `geom_*` functions in `ggplot2` we can use to represent our data. If we want a simple scatter plot, we can use the `geom_point()` function. Let's try it
 
-```{r geom-component, exercise = TRUE, exercise.eval = FALSE}
+```{r geom-component}
 # Geometric component
 ggplot(str_serv, aes(startYear, averageRating)) + 
   geom_point()
@@ -205,7 +198,7 @@ ggplot(str_serv, aes(startYear, averageRating)) +
 
 Notice that this time, we added the geometric component using `+`. In `ggplot2` we can use the `+` sign to add new layers to our plot, similar to how use the pipe operator `%>%` to add new steps in our data wrangling. You can also use this to modify the same plot in different ways. For example:
 
-```{r stack-layer, exercise = TRUE, exercise.eval = FALSE}
+```{r stack-layer}
 # Make an R object
 p <- ggplot(str_serv, aes(startYear, averageRating))
 
@@ -219,17 +212,17 @@ p + geom_point()
 
 Complete the following code to create a scatter plot of the budget vs. the revenue
 
-```{r hands-on2, exercise = TRUE, exercise.eval = FALSE}
+```{r hands-on2}
 # Plot budget (y) vs. revenue (x)
 ggplot(str_serv)
 ```
 
 
-## Other aesthetic attributes
+### Other aesthetic attributes
 
 You can add additional variables to a plot using other aesthetics like color, shape and size.
 
-```{r add-color, exercise = TRUE, exercise.eval = FALSE}
+```{r add-color}
 # Color by platform
 str_serv %>% 
   ggplot(aes(revenue, budget, color = platform)) + 
@@ -238,7 +231,7 @@ str_serv %>%
 
 You can also add the aesthetic attributes using the geom function
 
-```{r geom-aes, exercise = TRUE, exercise.eval = FALSE}
+```{r geom-aes}
 # Color by platform in geom_point()
 str_serv %>% 
   ggplot(aes(revenue, budget)) + 
@@ -247,7 +240,7 @@ str_serv %>%
 
 Suppose you want to color all the points with a fixed color, you can do so using the color name outside of `aes()`
 
-```{r fixed-color, exercise = TRUE, exercise.eval = FALSE}
+```{r fixed-color}
 # Fixed color scatter plot
 str_serv %>% 
   ggplot(aes(revenue, budget)) + 
@@ -258,14 +251,14 @@ str_serv %>%
 
 Make a scatter plot, this time coloring by country
 
-```{r hands-on3, exercise = TRUE, exercise.eval = FALSE}
+```{r hands-on3}
 # Color by country
 str_serv
 ```
 
 Note from this plot that there are some NA values there. We can take care of them by tidying up the data before plotting it
 
-```{r hands-on3-fix, exercise = TRUE, exercise.eval = FALSE}
+```{r hands-on3-fix}
 # Color by country without NAs
 str_serv %>% 
   filter(!is.na(country)) %>%
@@ -277,7 +270,7 @@ str_serv %>%
 
 Now try the other aesthetic attributes: shape and size. First, make a base plot
 
-```{r hands-on41, exercise = TRUE, exercise.eval = FALSE}
+```{r hands-on41}
 # Make a base plot 'p' with just the data component
 
 
@@ -285,7 +278,7 @@ Now try the other aesthetic attributes: shape and size. First, make a base plot
 
 Use the base plot to make a graph of budget vs. revenue with the shape determined by the platform
 
-```{r hands-on42, exercise = TRUE, exercise.eval = FALSE}
+```{r hands-on42}
 # Shape by platform
 
 
@@ -293,13 +286,13 @@ Use the base plot to make a graph of budget vs. revenue with the shape determine
 
 Use the same base plot to make the same graph, this time with the size determined by the average rating
 
-```{r hands-on43, exercise = TRUE, exercise.eval = FALSE}
+```{r hands-on43}
 # Size by averageRating
 
 
 ```
 
-## Common `geom_*` functions
+### Common `geom_*` functions
 
 Now we will explore some of the most popular `geom_*` functions. 
 
@@ -307,7 +300,7 @@ Now we will explore some of the most popular `geom_*` functions.
 
 To make a histogram you can use the `geom_col()` function. Let's make a bar plot of the totals of every genre. There is some data wrangling involved, so I went ahead and did that for you. The dataset we need is in the **counts\_by\_genre.csv** file inside the **data/** folder
 
-```{r col, exercise = TRUE, exercise.eval = FALSE}
+```{r col}
 # Read the new file
 cbg <- 
 
@@ -321,7 +314,7 @@ cbg %>%
 
 To make a box plot you can use the `geom_boxplot()` function. Let's make some box plots of the average IMDB rating for each of the platforms
 
-```{r box, exercise = TRUE, exercise.eval = FALSE}
+```{r box}
 # Box plot of rating by platforms
 str_serv %>%
   ggplot(aes(platform, averageRating)) +
@@ -332,7 +325,7 @@ str_serv %>%
 
 Now it's your turn to create box plots of the average rating , this time for the different types of media
 
-```{r hands-on5, exercise = TRUE, exercise.eval = FALSE}
+```{r hands-on5}
 # Box plots of budget by type of media
 
 
