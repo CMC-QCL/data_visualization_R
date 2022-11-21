@@ -1,8 +1,3 @@
-## This data cleaning process is not perfect, 
-## it was performed to obtain a dataset used for illustrative purposes only.
-## Furthermore, there's missing data that was imputed to get the full dataset
-## and a sample slice was taken afterwards.
-
 library(tidyverse)
 library(missForest)
 
@@ -142,7 +137,7 @@ reduced_imputed_dataset <- full_dataset %>%
 
 # Join with the rest of the data
 imputed_dataset <- full_dataset %>%
-  select(!c("budget", "revenue")) %>%  #Make space for the updated columns
+  select(!c("budget", "revenue")) %>%  # Make space for the updated columns
   left_join(reduced_imputed_dataset$ximp)
 
 # Take just 10% of the rows in each platform
@@ -150,7 +145,7 @@ final_dataset <- imputed_dataset %>%
   group_by(platform) %>%
   slice_sample(prop = 0.1) %>%
   ungroup() %>%
-  rename(type = recoded_titleType) %>%
+  rename(media = recoded_titleType) %>%
   select(!c("genres", "Adventure", "Adult", "Animation", "Biography", "Crime", "Documentary", "Family",
             "Fantasy", "Film.Noir", "Game.Show", "History", "Music", "Musical", "Mystery", "News", 
             "Reality.TV", "Short", "Sport", "Talk.Show", "War", "Western")) %>% 
