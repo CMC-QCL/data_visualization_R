@@ -1,7 +1,7 @@
 ---
 title: "Data Visualization with R"
 author: Jorge Peña (QCL Graduate Fellow)
-date: "Monday, November 21, 2022"
+date: "Wednesday, February 10, 2023"
 output:
   rmdformats::readthedown:
   highlight: tango
@@ -21,8 +21,6 @@ This is a Level 2 workshop, so I will assume you are familiar with the following
 - Basic arithmetic with R
 - How to install and use R packages
 - How to create and use vectors and data frames
-
-Although we will be using many of the packages in the [Tidyverse](https://www.tidyverse.org/), which are usually covered in the **Data Wrangling with R** workshop, I will explain everything we need as we go.
 
 ## Before we start
 
@@ -62,23 +60,24 @@ knitr::include_graphics("images/install_packages2.png")
 * Today's Data
 * Plotting Libraries in R
 * The Grammar of Graphics
+* ggplot2 Essential Components
   + The Data Component
   + The Aesthetics Component
   + The Geometries Component
-  + The Facets Component
-  + The Statistics Component
-  + The Coordinates Component
-  + The Themes Component
+* Other Components (if time permits)
+* Digital Badge
+* Resources
+* Save Your Project
 
 ## Steps in Data Analysis
 
-Although many people have different ways of approaching data analysis, it is always a good idea to follow a procedure to help us process our data. The main steps in any data analysis project are the following:
+It is always a good idea to follow a procedure to help us process our data. These are some of the steps you can follow on a data analysis project:
 
 ```{r fig-diagram, echo = FALSE, out.width = "100%", fig.align = "center"}
 knitr::include_graphics("images/data_analysis.png")
 ```
 
-In particular, data visualization has two purposes in a data analysis
+In particular, data visualization has two purposes in a data analysis project
 
 1. As a tool for exploratory data analysis.
 2. To explain and communicate the results.
@@ -97,14 +96,14 @@ Let's import our data. Use the `read_csv()` function to read the file **streamin
 library(tidyverse)
 
 # Load the file with today's data
-str_serv <- read_csv('data/streaming_services.csv')
+
 ```
 
 Take a look at some of the variables in our data
 
 ```{r data-head, include = TRUE, echo = TRUE}
 # Use the head() function
-head(str_serv)
+
 ```
 
 Now explore the structure of the data
@@ -153,98 +152,89 @@ knitr::kable(essential, "simple")
 
 \
 
-## ggplot2 essential components
+## ggplot2 Essential Components
 
 `ggplot2` works by mapping our **data** to the **aesthetic** attributes (color, shape, size) of **geometric** objects (points, lines, bars)
 
-#### **The Data Component**
+### The Data Component
 
 All plots start by adding our data using the `ggplot()` function.
 
 ```{r data-component}
 # Data component
-ggplot(str_serv)
+
 ```
 
 Notice that this is just a blank space where our plot should be. This is because we have not defined how we want our data to be mapped nor its visual elements.
 
-#### **The Aesthetics Component**
+### The Aesthetics Component
 
-This component maps the variables in our data onto the visual properties of our graph, such as the x and y coordinates. In order to use this component, call the `aes()` function inside `ggplot()`. For example, to plot the average IMDB rating against the release year of the title
+This component maps the variables in our data onto the visual properties of our graph, such as the x and y coordinates. In order to use this component, call the `aes()` function inside `ggplot()`. For example, to plot the average IMDB rating (`averageRating`) against the release year of the title (`startYear`)
 
 ```{r aes-component}
 # Aesthetic component
-ggplot(str_serv, aes(x = startYear, y = averageRating))
+
 ```
 
 The `aes()` function has `x` and `y` as positional arguments, so you can write the same thing as above without naming them
 
 ```{r aes-component2}
 # Aesthetic component
-ggplot(str_serv, aes(startYear, averageRating))
+
 ```
 
 Still you won't be able to see your data, but we now have our x-axis and y-axis.
 
-#### **The Geometries Component**
+### The Geometries Component
 
 There are multiple `geom_*` functions in `ggplot2` we can use to represent our data. If we want a simple scatter plot, we can use the `geom_point()` function. Let's try it
 
 ```{r geom-component}
 # Geometric component
-ggplot(str_serv, aes(startYear, averageRating)) + 
-  geom_point()
+
 ```
 
 Notice that this time, we added the geometric component using `+`. In `ggplot2` we can use the `+` sign to add new layers to our plot, similar to how use the pipe operator `%>%` to add new steps in our data wrangling. You can also use this to modify the same plot in different ways. For example:
 
 ```{r stack-layer}
 # Make an R object
-p <- ggplot(str_serv, aes(startYear, averageRating))
+
 
 # Add the geometric layer
-p + geom_point()
+
 ```
-
-
 
 #### **Hands-on 2**
 
-Complete the following code to create a scatter plot of the budget vs. the revenue
+Create a scatter plot of the budget vs. the revenue
 
 ```{r hands-on2}
 # Plot budget (y) vs. revenue (x)
-ggplot(str_serv)
+
 ```
 
 
-### Other aesthetic attributes
+### Other Aesthetic Attributes
 
 You can add additional variables to a plot using other aesthetics like color, shape and size.
 
 ```{r add-color}
 # Color by platform
-str_serv %>% 
-  ggplot(aes(revenue, budget, color = platform)) + 
-  geom_point()
+
 ```
 
 You can also add the aesthetic attributes using the geom function
 
 ```{r geom-aes}
 # Color by platform in geom_point()
-str_serv %>% 
-  ggplot(aes(revenue, budget)) + 
-  geom_point(aes(color = platform))
+
 ```
 
 Suppose you want to color all the points with a fixed color, you can do so using the color name outside of `aes()`
 
 ```{r fixed-color}
 # Fixed color scatter plot
-str_serv %>% 
-  ggplot(aes(revenue, budget)) + 
-  geom_point(color = "purple")
+
 ```
 
 #### **Hands-on 3**
@@ -253,22 +243,21 @@ Make a scatter plot, this time coloring by country
 
 ```{r hands-on3}
 # Color by country
-str_serv
+
+
 ```
 
 Note from this plot that there are some NA values there. We can take care of them by tidying up the data before plotting it
 
 ```{r hands-on3-fix}
 # Color by country without NAs
-str_serv %>% 
-  filter(!is.na(country)) %>%
-  ggplot(aes(revenue, budget, color = country)) + 
-  geom_point()
+
+
 ```
 
 #### **Hands-on 4**
 
-Now try the other aesthetic attributes: shape and size. First, make a base plot
+Now try the other aesthetic attributes: shape and size. First, make a base plot without any aesthetic arguments.
 
 ```{r hands-on41}
 # Make a base plot 'p' with just the data component
@@ -296,29 +285,53 @@ Use the same base plot to make the same graph, this time with the size determine
 
 Now we will explore some of the most popular `geom_*` functions. 
 
-#### **Bar plots**
+#### Bar Plots
 
-To make a histogram you can use the `geom_col()` function. Let's make a bar plot of the totals of every genre. There is some data wrangling involved, so I went ahead and did that for you. The dataset we need is in the **counts\_by\_genre.csv** file inside the **data/** folder
+To make a bar plot you can use the `geom_col()` and `geom_bar()` functions. `geom_col()` takes the heights of the bars to represent the values in the data.
 
-```{r col}
-# Read the new file
-cbg <- 
+Let's make a bar plot of the totals of every genre.
 
-# Bar plot by totals of genres
-cbg %>%
-  ggplot(aes(genre, total)) +
-  geom_col()
+```{r fig-genre-bar, echo = FALSE, out.width = "100%", fig.align = "center"}
+knitr::include_graphics("images/genre_barplot.png")
 ```
 
-#### **Box plots**
+There is some data wrangling involved, so I went ahead and did that for you. The dataset we need is in the **counts\_by\_genre.csv** file inside the **data/** folder. Take a look at the data first
 
-To make a box plot you can use the `geom_boxplot()` function. Let's make some box plots of the average IMDB rating for each of the platforms
+```{r col-data}
+# Read the new file
+
+```
+  
+Now, use `geom_col()` to make the bar plot
+
+```{r col-plot}
+# Bar plot by totals of genres
+
+```
+
+On the other hand, `geom_bar()` makes the heights of the bars to be the number of cases in each distinct value. Suppose we want to make the following bar plot of the counts of movies and TV shows in each platform.
+
+```{r fig-platform-bar, echo = FALSE, out.width = "100%", fig.align = "center"}
+knitr::include_graphics("images/platform_barplot.png")
+```
+
+```{r bar-plot}
+# Bar plot of platform count
+
+  
+```
+
+#### Box Plots
+
+```{r fig-boxplot, echo = FALSE, out.width = "100%", fig.align = "center"}
+knitr::include_graphics("images/boxplot.png")
+```
+
+To make a box plot you can use the `geom_boxplot()` function. Let's make some box plots of the average IMDB rating (`averageRating`) for each of the platforms
 
 ```{r box}
 # Box plot of rating by platforms
-str_serv %>%
-  ggplot(aes(platform, averageRating)) +
-  geom_boxplot()
+
 ```
 
 #### **Hands-on 5**
@@ -329,6 +342,108 @@ Now it's your turn to create box plots of the average rating , this time for the
 # Box plots of budget by type of media
 
 
+```
+
+## Other Components
+
+Defining the rest of the components is not essential for the plot, but they allow you to add and modify elements of your plot that you may find helpful to explore or communicate your data. These components are:
+
+```{r tab-extra, echo = FALSE}
+# Make table
+extra <- data.frame(Element = c("Facets", "Statistics", "Coordinates", "Themes"),
+                    Description = c("Panels of multiple plots", "Statistical summaries calculated from the data", "The coordinates system", "All non-data elements of your plot"))
+
+# Generate table
+knitr::kable(extra, "simple")
+```
+
+### The Facets Component
+
+Faceting generates multiple plots showing different subsets of the data. This is particularly useful during the EDA to compare patterns in different parts of the data. 
+
+Suppose you want to create multiple scatter plots of budget vs. revenue, one for each platform
+
+```{r facet-platform}
+# Facets of budget vs. revenue
+str_serv %>%
+  ggplot(aes(revenue, budget)) +
+  geom_point() +
+  facet_wrap(~ platform)
+```
+
+
+### The Statistics Component
+
+This component adds computed values to your plot to help you see patterns in your data. For example, suppose you want to add a linear regression line to your scatter plot of budget vs. revenue
+
+```{r stat-lm}
+# Linear regression line
+str_serv %>%
+  ggplot(aes(revenue, budget)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+```
+
+### The Coordinates Component
+
+This component controls the x and y coordinates in your plot. Take the scatter plot of budget vs. revenue colored by platform we made earlier.
+
+```{r prev-scatter}
+# Take a look at the scatter plot we made earlier
+str_serv %>%
+  ggplot(aes(revenue, budget, color = platform)) +
+  geom_point()
+```
+
+Most of the points are concentrated near the origin, so finding patterns there might be difficult. One thing we can try to do is to limit the x-axis to a certain range of values in order to take a closer look. 
+
+```{r coord-xlim}
+# Set a limit for the x-axis
+str_serv %>%
+  ggplot(aes(revenue, budget, color = platform)) +
+  geom_point() +
+  coord_cartesian(xlim = c(0, 1.5e+08))
+
+```
+
+Another approach could be changing the scale in the x-axis. By using a logarithmic scale, it is easier to visualize smaller values in a graph otherwise dominated by larger values.
+
+```{r coord-trans}
+# Use a logarithmic scale on the x-axis
+str_serv %>%
+  ggplot(aes(revenue, budget, color = platform)) +
+  geom_point() +
+  coord_trans(x = "log10")
+
+```
+
+
+### The Themes Component
+
+Some of the things you can do with the themes component is to change the labels and ticks of x and y-axis and modify the plot legends titles.
+
+As an example, let's change add a title to the scatter plot of budget vs. revenue colored by platform.
+
+```{r theme-title}
+# Add a title to the plot
+str_serv %>%
+  ggplot(aes(revenue, budget, color = platform)) +
+  geom_point() +
+  theme(plot.title = element_text())
+```
+
+
+## Digital Badge
+
+```{r hw-1}
+str_serv %>% 
+  filter(country %in% c("United States", "India", "United Kingdom")) %>%
+  mutate(country = factor(country, 
+                          levels = c("United States", "United Kingdom",
+                                     "India"))) %>% 
+  ggplot(aes(revenue, budget, color = platform)) + 
+  geom_point() + 
+  facet_wrap(~ country)
 ```
 
 ## Resources
@@ -348,7 +463,7 @@ You can practice your visualization skills too by reproducing other plots. You c
 - [Reddit **r/dataisbeautiful**](https://www.reddit.com/r/dataisbeautiful/)
 - [the R Graph Gallery](https://r-graph-gallery.com)
 
-## How to download your project
+## Save Your Project
 
 You can download your project and run this tutorial on your own computer. First you need to go to your workspace.
 
@@ -377,13 +492,4 @@ When the export is complete you will be able to download the zip file to your co
 ```{r fig-dest, echo = FALSE, out.width = "90%", fig.align = "center"}
 knitr::include_graphics("images/choose_destination.png")
 ```
-
-
-
-
-
-
-
-
-
 
