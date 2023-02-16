@@ -1,7 +1,7 @@
 ---
 title: "Data Visualization with R"
 author: Jorge Peña (QCL Graduate Fellow)
-date: "Wednesday, February 10, 2023"
+date: "Wednesday, February 15, 2023"
 output:
   rmdformats::readthedown:
   highlight: tango
@@ -169,12 +169,14 @@ Notice that this is just a blank space where our plot should be. This is because
 
 ### The Aesthetics Component
 
-This component maps the variables in our data onto the visual properties of our graph, such as the x and y coordinates. In order to use this component, call the `aes()` function inside `ggplot()`. For example, to plot the average IMDB rating (`averageRating`) against the release year of the title (`startYear`)
+This component **maps** the variables in our data onto the visual properties of our graph, such as the x and y coordinates. In order to use this component, call the `aes()` function. For example, to plot the average IMDB rating (`averageRating`) against the release year of the title (`startYear`)
 
 ```{r aes-component}
 # Aesthetic component
 
 ```
+
+Notice that this time, we added the geometric component using `+`. In `ggplot2` we can use the `+` sign to add new layers to our plot, similar to how we use the pipe operator `%>%` to add new steps in our data wrangling.
 
 The `aes()` function has `x` and `y` as positional arguments, so you can write the same thing as above without naming them
 
@@ -194,19 +196,10 @@ There are multiple `geom_*` functions in `ggplot2` we can use to represent our d
 
 ```
 
-Notice that this time, we added the geometric component using `+`. In `ggplot2` we can use the `+` sign to add new layers to our plot, similar to how use the pipe operator `%>%` to add new steps in our data wrangling. You can also use this to modify the same plot in different ways. For example:
-
-```{r stack-layer}
-# Make an R object
-
-
-# Add the geometric layer
-
-```
 
 #### **Hands-on 2**
 
-Create a scatter plot of the budget vs. the revenue
+Create a scatter plot of budget vs. revenue
 
 ```{r hands-on2}
 # Plot budget (y) vs. revenue (x)
@@ -214,7 +207,7 @@ Create a scatter plot of the budget vs. the revenue
 ```
 
 
-### Other Aesthetic Attributes
+### Other Aesthetic Mappings
 
 You can add additional variables to a plot using other aesthetics like color, shape and size.
 
@@ -223,14 +216,11 @@ You can add additional variables to a plot using other aesthetics like color, sh
 
 ```
 
-You can also add the aesthetic attributes using the geom function
+### Aesthetics vs. Attributes
 
-```{r geom-aes}
-# Color by platform in geom_point()
+Aesthetics, in `ggplot2`, refer to which variable is mapped onto it, while attributes refer to how something looks. Aesthetic mappings are defined inside the `aes()` function, while attributes are defined outside.
 
-```
-
-Suppose you want to color all the points with a fixed color, you can do so using the color name outside of `aes()`
+Suppose you want to color all the points with a fixed color, you can do so using the color argument inside `geom_point()`.
 
 ```{r fixed-color}
 # Fixed color scatter plot
@@ -239,35 +229,96 @@ Suppose you want to color all the points with a fixed color, you can do so using
 
 #### **Hands-on 3**
 
-Make a scatter plot, this time coloring by country
+Now try the other aesthetic mappings: shape and size. Make a scatter plot of budget vs. revenue with the shape determined by the platform
 
-```{r hands-on3}
-# Color by country
-
-
-```
-
-Note from this plot that there are some NA values there. We can take care of them by tidying up the data before plotting it
-
-```{r hands-on3-fix}
-# Color by country without NAs
+```{r hands-on31}
+# Scatter plot with shape determined by platform
 
 
 ```
 
-#### **Hands-on 4**
+Note that the shape mapping takes discrete variables.
 
-Now try the other aesthetic attributes: shape and size. First, make a base plot without any aesthetic arguments.
+```{r fig-shapes, echo = FALSE, out.width = "100%", fig.align = "center"}
+knitr::include_graphics("images/point_shape_options.png")
+```
 
-```{r hands-on41}
-# Make a base plot 'p' with just the data component
+Make the same scatter plot, this time with the size determined by the average rating
+
+```{r hands-on32}
+# Scatter plot with size determined by averageRating
+
+```
+
+Note that continuous and discrete variables can be mapped onto the size aesthetic.
+
+Use our previous plot to set the alpha attribute to 0.5. See the difference.
+
+```{r hands-on33}
+# Scatter plot with size determined by averageRating with transparency
+
+```
+
+### Multiple geometric layers
+
+It is sometimes useful to combine multiple geometric layers. For example, to draw a straight line between two groups of points in your scatter plot or draw a dot to represent the mean value of your data.
+
+Let's use our scatter plot of budget vs revenue colored by platform as our base plot
+
+```{r multiple-base}
+# Base plot
+
+```
+
+To draw a horizontal line we can use the `geom_hline()` function by specifying the y-intercept
+
+```{r multiple-hline}
+# Draw a horizontal line
+
+```
+
+We can use the `linetype` and `color` arguments to modify the plotted line. The possible arguments for `linetype` are: **"twodash", "solid", "longdash", "dotted", "dotdash", "dashed"** and **"blank"**.
+
+Similarly, we can use `geom_vline()` to draw vertical lines by specifying the x-intercept
+
+```{r multiple-vline}
+# Draw a vertical line
+
+```
+
+To draw diagonal lines, use the `geom_abline()` function by specifying the y-intercept and slope of the line
+
+```{r multiple-abline}
+# Draw a diagonal line
+
+```
+
+#### Global vs Local Aesthetic Mappings
+
+In our previous plots, all geometric layers have inherited the aesthetic mappings we defined on our `ggplot()` function. This is called the **global mapping**. However, we can also define our aesthetic mappings inside the `geom_*` functions. These are called **local mappings**.
+
+We can use local mappings to modify our aesthetics for each of the geometric layers. For example, if we want to draw a point on our scatter plot representing the mean value of our data we can add a second geometric layer with a different aesthetic mapping
+
+```{r big-red}
+# Compute the mean of our data
+
+
+# Plot the big red point in our scatter plot
+
+
+```
+
+We can also create different plots using the same global mapping and adding additional mappings in each geometric layer
+
+```{r global-aes}
+# Make a base plot 'p' for the budget vs. revenue plot
 
 
 ```
 
 Use the base plot to make a graph of budget vs. revenue with the shape determined by the platform
 
-```{r hands-on42}
+```{r local-aes-shape}
 # Shape by platform
 
 
@@ -275,7 +326,7 @@ Use the base plot to make a graph of budget vs. revenue with the shape determine
 
 Use the same base plot to make the same graph, this time with the size determined by the average rating
 
-```{r hands-on43}
+```{r local-aes-size}
 # Size by averageRating
 
 
@@ -334,11 +385,11 @@ To make a box plot you can use the `geom_boxplot()` function. Let's make some bo
 
 ```
 
-#### **Hands-on 5**
+#### **Hands-on 4**
 
 Now it's your turn to create box plots of the average rating , this time for the different types of media
 
-```{r hands-on5}
+```{r hands-on4}
 # Box plots of budget by type of media
 
 
@@ -422,46 +473,28 @@ str_serv %>%
 
 Some of the things you can do with the themes component is to change the labels and ticks of x and y-axis and modify the plot legends titles.
 
-As an example, let's change add a title to the scatter plot of budget vs. revenue colored by platform.
+As an example, let's add a title to the scatter plot of budget vs. revenue colored by platform.
 
 ```{r theme-title}
 # Add a title to the plot
 str_serv %>%
   ggplot(aes(revenue, budget, color = platform)) +
   geom_point() +
-  theme(plot.title = element_text())
+  labs(title = "Budget vs. Revenue by platform")
 ```
 
+Now, we can use the `theme()` to modify our theme component and change our title's text color.
 
-## Digital Badge
-
-```{r hw-1}
-str_serv %>% 
-  filter(country %in% c("United States", "India", "United Kingdom")) %>%
-  mutate(country = factor(country, 
-                          levels = c("United States", "United Kingdom",
-                                     "India"))) %>% 
-  ggplot(aes(revenue, budget, color = platform)) + 
-  geom_point() + 
-  facet_wrap(~ country)
+```{r theme-title-color}
+# Change the title's color
+str_serv %>%
+  ggplot(aes(revenue, budget, color = platform)) +
+  geom_point() +
+  labs(title = "Budget vs. Revenue by platform") +
+  theme(plot.title = element_text(color = "#8b0000"))
 ```
 
-## Resources
-
-Some useful online resources to keep learning about `ggplot2` are:
-
-- [Statistical tools for hight-throughput data analysis](http://www.sthda.com/english/wiki/ggplot2-essentials)
-- The guide on R by the [Attention and Working Memory Lab at Georgia Tech](https://englelab.gatech.edu/useRguide/introduction-to-ggplot2.html)
-
-If you are looking for datasets, these are some good resources:
-
-- [Reddit **r/datasets**](https://www.reddit.com/r/datasets/)
-- [Kaggle datasets](https://www.kaggle.com/datasets)
-
-You can practice your visualization skills too by reproducing other plots. You can find some beautiful ones on:
-
-- [Reddit **r/dataisbeautiful**](https://www.reddit.com/r/dataisbeautiful/)
-- [the R Graph Gallery](https://r-graph-gallery.com)
+We can do the same with the text in our axis and legend.
 
 ## Save Your Project
 
@@ -493,3 +526,23 @@ When the export is complete you will be able to download the zip file to your co
 knitr::include_graphics("images/choose_destination.png")
 ```
 
+## Digital Badge
+
+Send this Rmd file with your work and the completed hands-on activities to qcl@cmc.edu
+
+## Resources
+
+Some useful online resources to keep learning about `ggplot2` are:
+
+- [Statistical tools for hight-throughput data analysis](http://www.sthda.com/english/wiki/ggplot2-essentials)
+- The guide on R by the [Attention and Working Memory Lab at Georgia Tech](https://englelab.gatech.edu/useRguide/introduction-to-ggplot2.html)
+
+If you are looking for datasets, these are some good resources:
+
+- [Reddit **r/datasets**](https://www.reddit.com/r/datasets/)
+- [Kaggle datasets](https://www.kaggle.com/datasets)
+
+You can practice your visualization skills too by reproducing other plots. You can find some beautiful ones on:
+
+- [Reddit **r/dataisbeautiful**](https://www.reddit.com/r/dataisbeautiful/)
+- [the R Graph Gallery](https://r-graph-gallery.com)
