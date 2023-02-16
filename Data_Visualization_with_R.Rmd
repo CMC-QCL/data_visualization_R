@@ -44,7 +44,7 @@ knitr::include_graphics("images/new_project.png")
 knitr::include_graphics("images/project_from_git.png")
 ```
 
-Install the packages `tidyverse` and `learnr`. Recall that to install new packages in RStudio you can go to the **Packages** tab in the lower-right panel, click on **Install** and follow the instructions.
+Install the packages `tidyverse`, `learnr` and `rmdformats`. Recall that to install new packages in RStudio you can go to the **Packages** tab in the lower-right panel, click on **Install** and follow the instructions.
 
 ```{r fig-packages, echo = FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("images/install_packages.png")
